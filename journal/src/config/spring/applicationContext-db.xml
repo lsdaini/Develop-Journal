@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	<!-- 数据库连接 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<!-- <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" /> -->
+		<!-- <property name="url" value="jdbc:oracle:thin:@192.168.1.101:1521:dbname" /> -->
+		<property name="url" value="jdbc:mysql://localhost:3306/journal?useUnicode=true&amp;characterEncoding=utf-8&amp;" />
+		<property name="username" value="root" />
+		<property name="password" value="123456" />
+		<property name="maxActive" value="100" />
+	</bean>
+	<!-- Hibernate Properties -->
+	<bean id="hibernateProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+					<!-- org.hibernate.dialect.OracleDialect -->
+				</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+	</bean>
+	<!--配置SessionFactory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- <property name="lobHandler" ref="oracleLobHandler" /> -->
+		<property name="hibernateProperties" ref="hibernateProperties" />
+		<property name="annotatedClasses" ref="annotatedClasses" />
+	</bean>
+	<!-- annotation 类 -->
+	<bean id="annotatedClasses"
+		class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+				<value>lms.code.beans.LMS_Logs</value>
+				<value>lms.code.beans.LMS_Projects</value>
+				<value>lms.code.beans.LMS_Roles</value>
+				<value>lms.code.beans.LMS_Sections</value>
+				<value>lms.code.beans.LMS_Staffs</value>
+				<value>lms.code.beans.LMS_WorkReports</value>
+				<value>lms.code.beans.LMS_Tasks</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 使用spring+hibernate处理oracle BLOB -->
+	<!-- <bean id="nativeJdbcExtractor" lazy-init="true"
+		class="org.springframework.jdbc.support.nativejdbc.SimpleNativeJdbcExtractor" />
+	<bean id="oracleLobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler"
+		lazy-init="true">
+	</bean> -->
+</beans>
