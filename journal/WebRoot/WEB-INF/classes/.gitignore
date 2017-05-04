@@ -1,2 +1,4 @@
 /config/
 /lms/
+/log4j.properties
+/struts.xml
